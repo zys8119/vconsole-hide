@@ -16,8 +16,8 @@ export interface Options {
 }
 
 export interface VConsoleHideInstance extends ListenerClassType{
-    new (options?:Options):ListenerClassType
-    (options?:Options):ListenerClassType
+    new (options?:Partial<Options>):ListenerClassType
+    (options?:Partial<Options>):ListenerClassType
 }
 declare const _Instance:VConsoleHideInstance
 
