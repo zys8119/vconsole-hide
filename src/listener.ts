@@ -52,7 +52,8 @@ export class listenerClass implements ListenerClassType{
             localStorage.removeItem(this.cacheKey)
         }
         if(this.config.enable && this.isCache && this.config.isEnable?.call?.(this)){
-            this.vConsole = new VConsole(this.config.vConsole)
+            // @ts-ignore
+            this.vConsole = window.VConsole || new VConsole(this.config.vConsole)
         }else {
             this.vConsole?.destroy?.()
         }

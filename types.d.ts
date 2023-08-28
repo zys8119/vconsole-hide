@@ -15,8 +15,17 @@ export interface Options {
     isEnable:(this:ListenerClassType)=> boolean
 }
 
-export interface Instance extends ListenerClassType{
+export interface VConsoleHideInstance extends ListenerClassType{
     new (options?:Options):ListenerClassType
+    (options?:Options):ListenerClassType
 }
+declare const _Instance:VConsoleHideInstance
 
-export default Instance
+export default _Instance
+
+declare global {
+    const VConsoleHide:VConsoleHideInstance
+    interface Window {
+        VConsoleHide:VConsoleHideInstance
+    }
+}

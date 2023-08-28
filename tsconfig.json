@@ -2,7 +2,8 @@
   "compilerOptions": {
     "module": "esnext",
     "target": "es5",
-    "sourceMap": false
+    "sourceMap": false,
+    "moduleResolution": "Node"
   },
   "exclude": [
     "node_modules"
