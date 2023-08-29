@@ -9,9 +9,13 @@ export interface ListenerClassType {
 
 export interface Options {
     vConsole:VConsoleOptions
+    // 限制移动端触发触点个数，默认4指同时点击max次数，即默认10次
     touches:number
+    // 最大连续点击次数
     max:number
+    // 是否启用
     enable:boolean
+    // 启用自定义规则
     isEnable:(this:ListenerClassType)=> boolean
 }
 

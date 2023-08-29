@@ -1,6 +1,7 @@
 import VConsole from "vconsole"
 import {ListenerClassType, Options} from "../types";
 import {merge} from "lodash";
+import isMobile from "./isMobile";
 export class listenerClass implements ListenerClassType{
     private index = 0
     private x = 0
@@ -22,11 +23,14 @@ export class listenerClass implements ListenerClassType{
     }
     private init(){
         this.initVConsole()
-        window.addEventListener('wheel', this.reset.bind(this))
-        window.addEventListener('mousemove', this.reset.bind(this))
-        window.addEventListener('touchmove', this.reset.bind(this))
-        window.addEventListener('click', this.headerListener.bind(this))
-        window.addEventListener('touchstart', this.headerListener.bind(this))
+        if(isMobile()){
+            window.addEventListener('touchmove', this.reset.bind(this))
+            window.addEventListener('touchstart', this.headerListener.bind(this))
+        }else {
+            window.addEventListener('wheel', this.reset.bind(this))
+            window.addEventListener('mousemove', this.reset.bind(this))
+            window.addEventListener('click', this.headerListener.bind(this))
+        }
     }
     private reset(){
         this.index = 0
@@ -37,10 +41,16 @@ export class listenerClass implements ListenerClassType{
             this.initVConsole()
             this.reset()
         }
-        if(ev?.touches?.length >= this.config.touches || this.x === ev.x && this.y === ev.y){
-            this.index += 1
+        if(isMobile()){
+            if(ev?.touches?.length >= this.config.touches){
+                this.index += 1
+            }
         }else {
-            this.reset()
+            if(this.x === ev.x && this.y === ev.y){
+                this.index += 1
+            }else {
+                this.reset()
+            }
         }
         this.x = ev.x
         this.y = ev.y

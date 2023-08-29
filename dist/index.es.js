@@ -17227,6 +17227,18 @@ lodash.exports;
 
 var lodashExports = lodash.exports;
 
+function isMobile () {
+    // 获取用户代理字符串
+    var userAgent = navigator.userAgent;
+    // 创建移动端设备的关键词列表
+    var mobileKeywords = ["Mobile", "Android", "iPhone", "iPad", "Windows Phone", "BlackBerry"];
+    // 检查用户代理字符串中是否包含移动端设备的关键词
+    var isMobile = mobileKeywords.some(function (keyword) {
+        return userAgent.indexOf(keyword) !== -1;
+    });
+    return isMobile;
+}
+
 var listenerClass = /** @class */ (function () {
     function listenerClass(options) {
         this.index = 0;
@@ -17246,11 +17258,15 @@ var listenerClass = /** @class */ (function () {
     }
     listenerClass.prototype.init = function () {
         this.initVConsole();
-        window.addEventListener('wheel', this.reset.bind(this));
-        window.addEventListener('mousemove', this.reset.bind(this));
-        window.addEventListener('touchmove', this.reset.bind(this));
-        window.addEventListener('click', this.headerListener.bind(this));
-        window.addEventListener('touchstart', this.headerListener.bind(this));
+        if (isMobile()) {
+            window.addEventListener('touchmove', this.reset.bind(this));
+            window.addEventListener('touchstart', this.headerListener.bind(this));
+        }
+        else {
+            window.addEventListener('wheel', this.reset.bind(this));
+            window.addEventListener('mousemove', this.reset.bind(this));
+            window.addEventListener('click', this.headerListener.bind(this));
+        }
     };
     listenerClass.prototype.reset = function () {
         this.index = 0;
@@ -17262,11 +17278,18 @@ var listenerClass = /** @class */ (function () {
             this.initVConsole();
             this.reset();
         }
-        if (((_a = ev === null || ev === void 0 ? void 0 : ev.touches) === null || _a === void 0 ? void 0 : _a.length) >= this.config.touches || this.x === ev.x && this.y === ev.y) {
-            this.index += 1;
+        if (isMobile()) {
+            if (((_a = ev === null || ev === void 0 ? void 0 : ev.touches) === null || _a === void 0 ? void 0 : _a.length) >= this.config.touches) {
+                this.index += 1;
+            }
         }
         else {
-            this.reset();
+            if (this.x === ev.x && this.y === ev.y) {
+                this.index += 1;
+            }
+            else {
+                this.reset();
+            }
         }
         this.x = ev.x;
         this.y = ev.y;
