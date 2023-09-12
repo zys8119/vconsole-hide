@@ -46,5 +46,7 @@ export interface Options {
     enable:boolean
     // 启用自定义规则
     isEnable:(this:ListenerClassType)=> boolean
+    // 开启后的有效期，默认一小时内，单位毫秒
+    validTime?:number
 }
 ```
