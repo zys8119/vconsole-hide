@@ -1,6 +1,6 @@
 {
   "name": "vconsole-hide",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "",
   "main": "./dist/index.es.js",
   "types": "./types.d.ts",

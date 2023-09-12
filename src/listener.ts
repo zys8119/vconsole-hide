@@ -8,11 +8,12 @@ export class listenerClass implements ListenerClassType{
     private y = 0
     private isCache = false
     private cacheKey = '__vConsoleCache'
+    private cacheValidTimeKey = '__vConsoleCacheValidTime'
     private validTime = 0
     vConsole:InstanceType<typeof VConsole> | null
     config:Options
     defaultConfig:Partial<Options> = {
-        max:10,
+        max:12,
         touches:4,
         enable:true,
         isEnable:()=> true,
@@ -21,6 +22,7 @@ export class listenerClass implements ListenerClassType{
     constructor(options?:Partial<Options>) {
         this.config = merge(this.defaultConfig, options) as Options
         this.isCache = localStorage.getItem(this.cacheKey) === '1'
+        this.validTime = Number(localStorage.getItem(this.cacheValidTimeKey))
         this.init()
     }
     private init(){
@@ -64,8 +66,10 @@ export class listenerClass implements ListenerClassType{
         const isValidTime = this.isCache && (typeof this.config.validTime !== 'number' || typeof this.config.validTime === 'number' && Date.now() - this.validTime < this.config.validTime)
         if(this.isCache && isValidTime){
             localStorage.setItem(this.cacheKey, '1')
+            localStorage.setItem(this.cacheValidTimeKey, this.validTime as any)
         }else {
             localStorage.removeItem(this.cacheKey)
+            localStorage.removeItem(this.cacheValidTimeKey)
         }
         if(this.config.enable && this.isCache && isValidTime && this.config.isEnable?.call?.(this)){
             // @ts-ignore
