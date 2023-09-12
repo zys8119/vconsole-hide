@@ -8,6 +8,7 @@ export class listenerClass implements ListenerClassType{
     private y = 0
     private isCache = false
     private cacheKey = '__vConsoleCache'
+    private validTime = 0
     vConsole:InstanceType<typeof VConsole> | null
     config:Options
     defaultConfig:Partial<Options> = {
@@ -15,6 +16,7 @@ export class listenerClass implements ListenerClassType{
         touches:4,
         enable:true,
         isEnable:()=> true,
+        validTime:3600000
     }
     constructor(options?:Partial<Options>) {
         this.config = merge(this.defaultConfig, options) as Options
@@ -38,6 +40,9 @@ export class listenerClass implements ListenerClassType{
     private headerListener(ev:TouchEventInit & MouseEvent){
         if(this.index === this.config.max){
             this.isCache = !this.isCache
+            if(this.isCache){
+                this.validTime = Date.now()
+            }
             this.initVConsole()
             this.reset()
         }
@@ -56,12 +61,13 @@ export class listenerClass implements ListenerClassType{
         this.y = ev.y
     }
     private initVConsole(){
-        if(this.isCache ){
+        const isValidTime = this.isCache && (typeof this.config.validTime !== 'number' || typeof this.config.validTime === 'number' && Date.now() - this.validTime < this.config.validTime)
+        if(this.isCache && isValidTime){
             localStorage.setItem(this.cacheKey, '1')
         }else {
             localStorage.removeItem(this.cacheKey)
         }
-        if(this.config.enable && this.isCache && this.config.isEnable?.call?.(this)){
+        if(this.config.enable && this.isCache && isValidTime && this.config.isEnable?.call?.(this)){
             // @ts-ignore
             this.vConsole = window.VConsole || new VConsole(this.config.vConsole)
         }else {

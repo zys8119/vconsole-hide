@@ -17246,11 +17246,13 @@ var listenerClass = /** @class */ (function () {
         this.y = 0;
         this.isCache = false;
         this.cacheKey = '__vConsoleCache';
+        this.validTime = 0;
         this.defaultConfig = {
             max: 10,
             touches: 4,
             enable: true,
             isEnable: function () { return true; },
+            validTime: 3600000
         };
         this.config = lodashExports.merge(this.defaultConfig, options);
         this.isCache = localStorage.getItem(this.cacheKey) === '1';
@@ -17275,6 +17277,9 @@ var listenerClass = /** @class */ (function () {
         var _a;
         if (this.index === this.config.max) {
             this.isCache = !this.isCache;
+            if (this.isCache) {
+                this.validTime = Date.now();
+            }
             this.initVConsole();
             this.reset();
         }
@@ -17296,13 +17301,14 @@ var listenerClass = /** @class */ (function () {
     };
     listenerClass.prototype.initVConsole = function () {
         var _a, _b, _c, _d;
-        if (this.isCache) {
+        var isValidTime = this.isCache && (typeof this.config.validTime !== 'number' || typeof this.config.validTime === 'number' && Date.now() - this.validTime < this.config.validTime);
+        if (this.isCache && isValidTime) {
             localStorage.setItem(this.cacheKey, '1');
         }
         else {
             localStorage.removeItem(this.cacheKey);
         }
-        if (this.config.enable && this.isCache && ((_b = (_a = this.config.isEnable) === null || _a === void 0 ? void 0 : _a.call) === null || _b === void 0 ? void 0 : _b.call(_a, this))) {
+        if (this.config.enable && this.isCache && isValidTime && ((_b = (_a = this.config.isEnable) === null || _a === void 0 ? void 0 : _a.call) === null || _b === void 0 ? void 0 : _b.call(_a, this))) {
             // @ts-ignore
             this.vConsole = window.VConsole || new VConsole(this.config.vConsole);
         }
